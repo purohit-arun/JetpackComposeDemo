@@ -1,29 +1,80 @@
 package com.example.composedemo
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Button
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BoxExample3()
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                ButtonDemo()
+            }
         }
+    }
+
+}
+
+@Composable
+fun ButtonDemo() {
+    val context = LocalContext.current
+    Button(onClick = {
+
+        Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
+    }) {
+        Text(text = "Add to cart")
+    }
+    TextButton(onClick = {
+
+        Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
+    }) {
+        Text(text = "Add to cart")
+    }
+    OutlinedButton(onClick = {
+
+        Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
+    }) {
+        Text(text = "Add to cart")
+    }
+    Button(
+        onClick = {
+            Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
+        },
+        contentPadding = PaddingValues(16.dp),
+        border = BorderStroke(10.dp, Color.Black),
+        colors = ButtonDefaults.textButtonColors(
+            backgroundColor = Color.DarkGray,
+            contentColor = Color.White
+        ),
+        shape = CutCornerShape(10.dp)
+    ) {
+        Text(
+            text = "Add to cart",
+            style = MaterialTheme.typography.h3,
+            modifier = Modifier.padding(5.dp)
+        )
     }
 }
 
@@ -154,8 +205,7 @@ fun BoxExample3() {
             colors = ButtonDefaults.textButtonColors(
                 backgroundColor = Color.White,
                 contentColor = Color.DarkGray
-            )
-            ,
+            ),
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(10.dp)
