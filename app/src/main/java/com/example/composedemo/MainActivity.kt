@@ -4,214 +4,148 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.composedemo.data.TvShowList
+import com.example.composedemo.model.TvShow
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Column(
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                ButtonDemo()
+            displayTvShows {
+                Toast.makeText(this, it.name, Toast.LENGTH_LONG).show()
             }
         }
     }
-
 }
 
 @Composable
-fun ButtonDemo() {
-    val context = LocalContext.current
-    Button(onClick = {
-
-        Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
-    }) {
-        Text(text = "Add to cart")
-    }
-    TextButton(onClick = {
-
-        Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
-    }) {
-        Text(text = "Add to cart")
-    }
-    OutlinedButton(onClick = {
-
-        Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
-    }) {
-        Text(text = "Add to cart")
-    }
-    Button(
-        onClick = {
-            Toast.makeText(context, "Button Clicked", Toast.LENGTH_SHORT).show()
-        },
-        contentPadding = PaddingValues(16.dp),
-        border = BorderStroke(10.dp, Color.Black),
-        colors = ButtonDefaults.textButtonColors(
-            backgroundColor = Color.DarkGray,
-            contentColor = Color.White
-        ),
-        shape = CutCornerShape(10.dp)
+fun ScrollableColumnDemo() {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier.verticalScroll(scrollState)
     ) {
-        Text(
-            text = "Add to cart",
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.padding(5.dp)
-        )
-    }
-}
-
-@Composable
-fun BoxExample1() {
-    Box(
-        modifier = Modifier
-            .background(color = Color.Green)
-            .size(180.dp, 300.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .size(125.dp, 100.dp)
-                .background(Color.Yellow)
-                .align(Alignment.TopEnd)
-        ) {
+        for (i in 1..100) {
             Text(
-                text = "hi",
+                text = "username $i",
                 style = MaterialTheme.typography.h3,
-                modifier = Modifier
-                    .background(Color.White)
-                    .size(90.dp, 50.dp)
-                    .align(Alignment.BottomCenter)
+                modifier = Modifier.padding(10.dp)
             )
+            Divider(color = Color.Black, thickness = 5.dp)
         }
     }
 }
 
+@Composable
+fun lazyColumnsDemo(selectedItem: (String) -> Unit) {
+    LazyColumn {
+        items(100) {
+            Text(
+                text = "username $it",
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable {
+                        selectedItem("$it Selected Item")
+                    }
+            )
+            Divider(color = Color.Black, thickness = 5.dp)
+        }
+    }
+}
+
+//Displaying tvshow list
+@Composable
+private fun TvShowImage(tvShow: TvShow) {
+    Image(
+        painter = painterResource(id = tvShow.imageId),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .padding(4.dp)
+            .height(140.dp)
+            .width(100.dp)
+            .clip(RoundedCornerShape(10.dp))
+    )
+}
 
 @Composable
-fun BoxExample2() {
-    Box(
-        modifier = Modifier
-            .background(Color.LightGray)
-            .fillMaxSize()
+fun displayTvShows(selectedItem: (TvShow) -> Unit) {
+    val tvShows = remember { TvShowList.tvShows }
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(
-            text = "TopStart",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.TopStart)
-        )
-        Text(
-            text = "TopCenter",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.TopCenter)
-        )
-        Text(
-            text = "TopEnd",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.TopEnd)
-        )
-        Text(
-            text = "CenterStart",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.CenterStart)
-        )
-        Text(
-            text = "Center",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.Center)
-        )
-        Text(
-            text = "CenterEnd",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.CenterEnd)
-        )
-        Text(
-            text = "BottomStart",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.BottomStart)
-        )
-        Text(
-            text = "BottomCenter",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.BottomCenter)
-        )
-        Text(
-            text = "BottomEnd",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .background(Color.Yellow)
-                .padding(10.dp)
-                .align(Alignment.BottomEnd)
+        items(
+            items = tvShows,
+            itemContent = {
+                TvShowListItem(
+                    tvShow = it,
+                    selectedItem
+                )
+            }
         )
     }
 }
 
 @Composable
-fun BoxExample3() {
-    Box() {
-        Image(
-            painterResource(id = R.drawable.kotlin_cover_1024x576),
-            contentDescription = "Kotlin Background"
-        )
-        Text(
-            text = "Kotlin",
-            color = Color.Black,
-            style = MaterialTheme.typography.h3,
+private fun TvShowListItem(tvShow: TvShow, selectedItem: (TvShow) -> Unit) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        elevation = 10.dp,
+        shape = RoundedCornerShape(corner = CornerSize(10.dp))
+    ) {
+        Row(
             modifier = Modifier
-                .align(Alignment.BottomStart)
-        )
-        Button(
-            onClick = { },
-            colors = ButtonDefaults.textButtonColors(
-                backgroundColor = Color.White,
-                contentColor = Color.DarkGray
-            ),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(10.dp)
-                .border(5.dp, Color.DarkGray, RectangleShape)
+                .padding(5.dp)
+                .fillMaxWidth()
+                .clickable { selectedItem(tvShow) },
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Add to Cart")
+            TvShowImage(tvShow = tvShow)
+            Column() {
+                Text(text = tvShow.name, style = MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = tvShow.overview,
+                    style = MaterialTheme.typography.body1,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = tvShow.year.toString(), style = MaterialTheme.typography.h5)
+                    Text(text = tvShow.rating.toString(), style = MaterialTheme.typography.h5)
+                }
+            }
         }
     }
 }
